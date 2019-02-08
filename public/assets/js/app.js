@@ -4,9 +4,9 @@ $("#add-burger").on("click", (event) => {
 
   const newBurger = {
     name: $("#name-input").val().trim()
-  }
+  };
 
-  //console.log(newBurger);
+  console.log(newBurger);
   //ajax call
   $.ajax({
     url: "/api/burgers",
@@ -32,6 +32,10 @@ $(".to-eat").on("click", function (event) {
 
   $("#confirm-burger").text(burgerName);
 
+  const dataUpdate = {
+    devoured: true
+  };
+  console.log(dataUpdate);
   //confirm order burger;
   $(document).on("click", "#confirm-order", function (event) {
     // console.log(burgerId);
@@ -39,6 +43,7 @@ $(".to-eat").on("click", function (event) {
     $.ajax({
       url: "/api/burgers/" + burgerId,
       method: "PUT",
+      data: dataUpdate
     }).then(result => {
       // alert("Burger devoured!");
       location.reload();

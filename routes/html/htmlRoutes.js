@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const cnx=require("../../config/cnx");
+const db=require("../../models");
 
 //routes
 router.get("/", (req, res) => {
@@ -7,14 +7,18 @@ router.get("/", (req, res) => {
 });
 
 router.get("/burgers", (req, res) => {
-  cnx.query("Select * from burgers",(err,dbBurgers) =>{
-    if(err){
-      console.log(err);
-    }
-    //console.log(dbBurgers);
+  db
+      .burgers
+      .findAll()
+      .then(dbBurgers => {
+        res.render("burgers",{burgers:dbBurgers});
 
-    res.render("burgers",{burgers:dbBurgers});
+      })
+      .catch(err => {
+        console.log("Select All Error: " + err);
+        res.status(400).json(err);
+      });
+    
   });
-});
 
 module.exports = router;

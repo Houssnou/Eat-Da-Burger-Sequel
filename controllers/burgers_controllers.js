@@ -1,69 +1,97 @@
-const cnx = require("../config/cnx");
+const db = require("../models");
 
 module.exports = {
   //select all burgers
   getAllBurgers: (req, res) => {
-    cnx.query("SELECT * FROM burgers", (err, dbburgers) => {
+    db
+      .burgers
+      .findAll()
+      .then(dbBurgers => {
+        res.json(dbBurgers);
 
-      res.json(dbburgers);
-    });
+      })
+      .catch(err => {
+        console.log("Select All Error: " + err);
+        res.status(400).json(err);
+      });
   },
 
   //add a burger
   addBurger: (req, res) => {
-    cnx.query("INSERT INTO burgers SET ?", req.body, (err, result) => {
-      if (err) {
-        console.log("Insert Error: " + err);
+    db.burgers.create({
+        name: req.body.name
+      }).then(result => {
+        res.json(result)
+      })
+      .catch(err => {
+        console.log("Select All Error: " + err);
         res.status(400).json(err);
-      };
-      res.json(result);
-    });
+      });
   },
 
   //update a buger /:id
   updateBuger: (req, res) => {
-    
-    //Update products set ? where ?
-    cnx.query("update burgers set devoured = 1 where id =?", req.params.id, (err, result) => {
-      if (err) {
+    console.log(req.body);
+
+    db.burgers.update({
+        devoured: req.body.devoured
+      }, {
+        where: {
+          id: req.params.id
+        }
+      }).then(result => {
+        res.json(result)
+      })
+      .catch(err => {
         console.log("Update Error: " + err);
         res.status(400).json(err);
-      };
-      res.json(result);
-    });
+      });
+
   },
 
   //delete a burger
   deleteBurger: (req, res) => {
-    cnx.query("delete from burgers where id = ?", req.params.id, (err, result) => {
-      if (err) {
-        console.log("Delete Error: " + err);
+    db.burgers.destroy({
+        where: {
+          id: req.params.id
+        }
+      }).then(result => {
+        res.json(result)
+      })
+      .catch(err => {
+        console.log("Delete Erro: " + err);
         res.status(400).json(err);
-      };
-      res.json(result);
+      });
 
-    });
   },
   //delete Aallr
-  deleteAll: (req, res) => {
-    cnx.query("delete FROM burgers", (err, result) => {
-      if (err) {
-        console.log("Delete Error: " + err);
-        res.status(400).json(err);
-      };
-      res.json(result);
-
+  deleteAll: (req, res) => {    
+    db.burgers.destroy({
+      where: {
+       //left intenttionaly blank to delete all
+      }
+    }).then(result => {
+      res.json(result)
+    })
+    .catch(err => {
+      console.log("Delete Erro: " + err);
+      res.status(400).json(err);
     });
   },
   //Reset All
   resetAll: (req, res) => {
-    cnx.query("Update burgers set devoured = 0", (err, result) => {
-      if (err) {
-        console.log("Update Error: " + err);
-        res.status(400).json(err);
-      };
-      res.json(result);
-
+    db.burgers.update({
+      devoured: req.body.devoured
+    }, {
+      where: {
+        //left intenttionally blank to update all
+      }
+    }).then(result => {
+      res.json(result)
+    })
+    .catch(err => {
+      console.log("Update Error: " + err);
+      res.status(400).json(err);
     });
-  }
+  } 
 }

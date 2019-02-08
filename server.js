@@ -6,6 +6,8 @@ const app = express();
 // import routes
 const routes = require("./routes");
 
+//import models
+const db = require("./models");
 
 
 // Set the port of our application
@@ -27,7 +29,9 @@ app.use("/img",express.static(__dirname + "/public/assets/img"));
 app.use(routes);
 
 // Start our server so that it can begin listening to client requests.
+db.sequelize.sync().then(function() {
 app.listen(PORT, function() {
   // Log (server-side) when our server has started
   console.log("App running on: http://localhost:" + PORT);
+});
 });
